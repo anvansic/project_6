@@ -1,0 +1,35 @@
+Development Strategy
+
+1.) Create Player and Enemy classes:
+
+1a) Enemy {initLoc, speed, loadSprite}
+
+1b) Enemy Methods {move(), collide()}
+
+1c) Player {initLoc, loadSprite}
+
+1d) Player Methods {move(), render()}
+
+
+2.) keyPress event handlers and methods
+
+2a) Left, right, up, down
+
+2b) Check to avoid off-screen movement
+
+2c) Win condition (sprite reaches water tile)
+
+
+3.) Instantiate Player and Enemy.
+
+3a) One Player
+
+3b) Instances of Enemy in allEnemies[].
+
+
+FUNCTIONAL REQS
+1) Player is prevented from moving off-screen.
+2) Enemy instances cross the screen.
+3) Collisions are on-time and visually consistent.
+4) Collision is a loss condition and resets the game.
+5) Confirmation is given when win condition is met.

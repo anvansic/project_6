@@ -6,6 +6,8 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
+    this.x = 100;
+    this.y = createLoc() * 83;;
     return this;
 };
 
@@ -27,24 +29,66 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 var Player = function() {
   this.sprite = 'images/char-boy.png';
+  this.x = 202;
+  this.y = 415;
   return this;
 };
 
-Player.prototype.update = function() {
+Player.prototype.update = function(x, y) {
+  this.x = x;
+  this.y = y;
 };
 
 Player.prototype.render = function() {
-
+  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 Player.prototype.handleInput = function(key) {
-
+  if(key == 'left') {
+    let newX = this.x - 101;
+    if(newX >= 0) {
+      this.update(newX, this.y);
+    }
+  }
+  else if(key == 'up') {
+    let newY = this.y - 83;       //NOTE: Because the win condition is triggered
+                                  //before the player is given the opportunity
+                                  //to fall off the top canvas edge, this check
+                                  //may not be needed in the deliverable version.
+    if(newY >= 0) {
+      this.update(this.x, newY);
+    }
+  }
+  else if(key == 'right') {
+    let newX = this.x + 101;
+    if(newX <= 505) {
+      this.update(newX, this.y);
+    }
+  }
+  else if(key == 'down') {
+    let newY = this.y + 83;
+    if(newY <= 606) {
+      this.update(this.x, newY);
+    }
+  }
+  this.update(this.x, this.y);
 };
 
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+
+let createLoc = function() {
+  const min = Math.ceil(0);
+  const max = Math.floor(2);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+let createSpeed = function() {
+
+};
+
 var enemy1 = new Enemy();
 var enemy2 = new Enemy();
 var enemy3 = new Enemy();

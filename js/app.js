@@ -1,13 +1,15 @@
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(startLine) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = 100;
-    this.y = createLoc() * 83;
+    this.x = startLine;
+    this.y = createLoc() * 83 + shiftUp;
+    this.enemyCollide = this.x + 2;
+    this.enemyWidth = 98;
     this.speed = createSpeed();
     return this;
 };
@@ -15,6 +17,11 @@ var Enemy = function() {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
+    if(this.x >= 505) {
+      this.x = -101;
+      this.y = createLoc() * 83 + shiftUp;
+      this.speed = createSpeed();
+    }
     this.x += this.speed * dt;
 };
 
@@ -29,11 +36,19 @@ Enemy.prototype.render = function() {
 var Player = function() {
   this.sprite = 'images/char-boy.png';
   this.x = 202;
-  this.y = 415;
+  this.y = 415 + shiftUp;
+  this.playerCollide = this.x + 17;
+  this.playerWidth = 67;
   return this;
 };
 
 Player.prototype.update = function() {
+  //Collision detection
+  for(var enemy of allEnemies) {
+    if((this.y == enemy.y)&&(0 >= this.x - (enemy.x + spriteWidth))&&((this.x + spriteWidth) - enemy.x >= 0)) {
+      console.log("Collision detected");
+    }
+  }
 };
 
 Player.prototype.render = function() {
@@ -47,10 +62,10 @@ Player.prototype.handleInput = function(key) {
   else if((key == 'right')&&(this.x + 202 <= 505)) {
     this.x += 101;
   }
-  else if((key == 'up')&&(this.y - 83 >= 0)) {
+  else if((key == 'up')&&(this.y - 83 - shiftUp >= 0)) {
     this.y -= 83;
   }
-  else if((key == 'down')&&(this.y + 83 <= 496)) {
+  else if((key == 'down')&&(this.y + 83 - shiftUp <= 496)) {
     this.y += 83;
   }
 };
@@ -61,23 +76,35 @@ Player.prototype.handleInput = function(key) {
 // Place the player object in a variable called player
 
 let createLoc = function() {
-  const min = Math.ceil(0);
-  const max = Math.floor(2);
+  const min = Math.ceil(1);
+  const max = Math.floor(3);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 let createSpeed = function() {
-  const min = Math.ceil(10);
-  const max = Math.floor(40);
+  const min = Math.ceil(100);
+  const max = Math.floor(250);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-var enemy1 = new Enemy();
-var enemy2 = new Enemy();
-var enemy3 = new Enemy();
-var allEnemies = [enemy1, enemy2, enemy3];
+//shiftUp shifts the y-positions of the in-game sprites to give the appearance
+//of "standing" on the tiles.
+const shiftUp = -30;
+
+//spriteWidth is the width of the game entities used in the collision detection
+//calculations.
+const spriteWidth = 101;
+
+var enemy1 = new Enemy(0);
+var enemy2 = new Enemy(0);
+var enemy3 = new Enemy(0);
+var enemy4 = new Enemy(202);
+var enemy5 = new Enemy(202);
+var enemy6 = new Enemy(202);
+var allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6];
 
 var player = new Player();
+
 
 
 // This listens for key presses and sends the keys to your

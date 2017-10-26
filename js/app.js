@@ -9,7 +9,7 @@ var Enemy = function(startLine) {
     this.x = startLine;
     this.y = createLoc() * 83 + shiftUp;
     this.enemyCollide = this.x + 2;
-    this.enemyWidth = 98;
+    this.enemyWidth = this.x + 98;
     this.speed = createSpeed();
     return this;
 };
@@ -23,6 +23,8 @@ Enemy.prototype.update = function(dt) {
       this.speed = createSpeed();
     }
     this.x += this.speed * dt;
+    this.enemyCollide = this.x + 2;
+    this.enemyWidth = this.x + 98;
 };
 
 // Draw the enemy on the screen, required method for game
@@ -38,16 +40,21 @@ var Player = function() {
   this.x = 202;
   this.y = 415 + shiftUp;
   this.playerCollide = this.x + 17;
-  this.playerWidth = 67;
+  this.playerWidth = this.x + 67;
   return this;
 };
 
 Player.prototype.update = function() {
   //Collision detection
   for(var enemy of allEnemies) {
-    if((this.y == enemy.y)&&(0 >= this.x - (enemy.x + spriteWidth))&&((this.x + spriteWidth) - enemy.x >= 0)) {
-      console.log("Collision detected");
+    if((this.y == enemy.y)&&(0 >= this.playerCollide - enemy.enemyWidth)&&(this.playerWidth - enemy.enemyCollide >= 0)) {
+      window.setTimeout(loseGame, 100);
     }
+  }
+
+  //Checking for win condition
+  if(this.y < 0) {
+    window.setTimeout(winGame, 100);
   }
 };
 
@@ -58,9 +65,13 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
   if((key == 'left')&&(this.x - 101 >= 0)) {
     this.x -= 101;
+    this.playerCollide -= 101;
+    this.playerWidth -= 101;
   }
   else if((key == 'right')&&(this.x + 202 <= 505)) {
     this.x += 101;
+    this.playerCollide += 101;
+    this.playerWidth += 101;
   }
   else if((key == 'up')&&(this.y - 83 - shiftUp >= 0)) {
     this.y -= 83;
@@ -86,6 +97,16 @@ let createSpeed = function() {
   const max = Math.floor(250);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+let loseGame = function() {
+  alert("You were hit!");
+  window.location.reload();
+};
+
+let winGame = function() {
+  alert("You win!");
+  window.location.reload();
+}
 
 //shiftUp shifts the y-positions of the in-game sprites to give the appearance
 //of "standing" on the tiles.

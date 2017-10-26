@@ -7,10 +7,10 @@ var Enemy = function(startLine) {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     this.x = startLine;
-    this.y = createLoc() * 83 + shiftUp;
+    this.y = this.createLoc() * 83 + shiftUp;
     this.enemyCollide = this.x + 2;
     this.enemyWidth = this.x + 98;
-    this.speed = createSpeed();
+    this.speed = this.createSpeed();
     return this;
 };
 
@@ -19,8 +19,8 @@ var Enemy = function(startLine) {
 Enemy.prototype.update = function(dt) {
     if(this.x >= 505) {
       this.x = -101;
-      this.y = createLoc() * 83 + shiftUp;
-      this.speed = createSpeed();
+      this.y = this.createLoc() * 83 + shiftUp;
+      this.speed = this.createSpeed();
     }
     this.x += this.speed * dt;
     this.enemyCollide = this.x + 2;
@@ -30,6 +30,18 @@ Enemy.prototype.update = function(dt) {
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+Enemy.prototype.createLoc = function() {
+  const min = Math.ceil(1);
+  const max = Math.floor(3);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+Enemy.prototype.createSpeed = function() {
+  const min = Math.ceil(100);
+  const max = Math.floor(250);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 // Now write your own player class
@@ -48,13 +60,13 @@ Player.prototype.update = function() {
   //Collision detection
   for(var enemy of allEnemies) {
     if((this.y == enemy.y)&&(0 >= this.playerCollide - enemy.enemyWidth)&&(this.playerWidth - enemy.enemyCollide >= 0)) {
-      window.setTimeout(loseGame, 100);
+      window.setTimeout(this.loseGame, 100);
     }
   }
 
   //Checking for win condition
   if(this.y < 0) {
-    window.setTimeout(winGame, 100);
+    window.setTimeout(this.winGame, 100);
   }
 };
 
@@ -81,40 +93,24 @@ Player.prototype.handleInput = function(key) {
   }
 };
 
+Player.prototype.loseGame = function() {
+  alert("You were hit!");
+  window.location.reload();
+};
+
+Player.prototype.winGame = function() {
+  alert("You win!");
+  window.location.reload();
+};
+
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-let createLoc = function() {
-  const min = Math.ceil(1);
-  const max = Math.floor(3);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-let createSpeed = function() {
-  const min = Math.ceil(100);
-  const max = Math.floor(250);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-let loseGame = function() {
-  alert("You were hit!");
-  window.location.reload();
-};
-
-let winGame = function() {
-  alert("You win!");
-  window.location.reload();
-}
-
 //shiftUp shifts the y-positions of the in-game sprites to give the appearance
 //of "standing" on the tiles.
 const shiftUp = -30;
-
-//spriteWidth is the width of the game entities used in the collision detection
-//calculations.
-const spriteWidth = 101;
 
 var enemy1 = new Enemy(0);
 var enemy2 = new Enemy(0);

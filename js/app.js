@@ -32,12 +32,16 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Randomly generate which row an enemy starts on.
+// Algorithm from MDN's JavaScript documentation on Math.random.
 Enemy.prototype.createLoc = function() {
   const min = Math.ceil(1);
   const max = Math.floor(3);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+// Randomly generate the enemy's speed.
+// Algorithm from MDN's JavaScript documentation on Math.random.
 Enemy.prototype.createSpeed = function() {
   const min = Math.ceil(100);
   const max = Math.floor(250);
@@ -93,11 +97,13 @@ Player.prototype.handleInput = function(key) {
   }
 };
 
+// Create the alert when the player loses and reset.
 Player.prototype.loseGame = function() {
   alert("You were hit!");
   window.location.reload();
 };
 
+// Create the alert when the player wins and reset.
 Player.prototype.winGame = function() {
   alert("You win!");
   window.location.reload();
